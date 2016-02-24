@@ -253,12 +253,12 @@ var RiTa = {
       var inMiddleOfSentence = false;
       var quotationStarted;
       var quotationJustFinished = false;
-      
+
       if (arr[0])
         quotationStarted = quotes.test(arr[0]);
-      else 
+      else
         quotationStarted = false;
-      
+
       for (var i = 1; i < arr.length; i++) {
 
         if (arr[i]) {
@@ -273,7 +273,7 @@ var RiTa = {
           if (dbug) {
             console.log(i+") CHECK: "+arr[i]+" "+arr[i-1]+ " "+thisPunct+" "+lastPunct + " " +thisQuote);
           }
-          
+
           if (quotationStarted && thisQuote) {
             // skip adding delim and mark qutation as ended
             quotationJustFinished = true;
@@ -450,7 +450,8 @@ var RiTa = {
 
     words = trim(words);
 
-    words = words.replace(/([\\?!\"\\.,;:@#$%&])/g, " $1 ");
+    // words = words.replace(/([\\?!\"\\.,;:@#$%&])/g, " $1 ");
+    words = words.replace(/([\\?!\"\\.,;:$%&\*])/g, " $1 ");
     words = words.replace(/\\.\\.\\./g, " ... ");
     words = words.replace(/\\s+/g, SP);
     words = words.replace(/,([^0-9])/g, " , $1");
@@ -947,7 +948,7 @@ RiMarkov.prototype = {
     this.root = new TextNode(null, 'ROOT');
     this.isSentenceAware = (a.length > 1 && !a[1]) ? false : true;
     this.allowDuplicates = (a.length > 2 && !a[2]) ? false : true;
-    this.printIgnoredText = false;
+    this.printIgnoredText = true;
   },
 
   _initArgs: function() {
@@ -1286,17 +1287,17 @@ RiMarkov.prototype = {
       first = tokens[0],
       last = tokens[tokens.length - 1];
 
-    if (!first.match(/[A-Z]\S*/)) {
-      if (this.printIgnoredText)
-        log("Skipping: bad first char in '" + sent + "'");
-      return false;
-    }
+    // if (!first.match(/[A-Za-z]\S*/)) {
+    //   if (this.printIgnoredText)
+    //     log("Skipping: bad first char in '" + sent + "'");
+    //   return false;
+    // }
 
-    if (!last.match(/[!?.]/)) {
-      if (this.printIgnoredText)
-        log("Bad last token: '" + last + "' in: " + sent);
-      return false;
-    }
+    // if (!last.match(/[!?.]/)) {
+    //   if (this.printIgnoredText)
+    //     log("Bad last token: '" + last + "' in: " + sent);
+    //   return false;
+    // }
 
     if (!this.allowDuplicates) {
       if (!this.isSentenceAware) {
@@ -1422,12 +1423,12 @@ RiMarkov.prototype = {
 
       tokens = RiTa.tokenize(sentence);
 
-      if (!this._validSentenceStart(tokens[0])) {
+      // if (!this._validSentenceStart(tokens[0])) {
 
-        if (this.printIgnoredText)
-          warn("Skipping (bad sentence start): " + tokens);
-        continue;
-      }
+      //   if (this.printIgnoredText)
+      //     warn("Skipping (bad sentence start): " + tokens);
+      //   continue;
+      // }
 
       //log("Added sentence start] " + tokens);
 
@@ -4077,7 +4078,7 @@ Concorder.prototype = {
       for (var i = 0; i < idxs.length; i++) {
           var sub = this.words.slice(Math.max(0,idxs[i] - numWords),
             Math.min(this.words.length, idxs[i] + numWords+1));
-            
+
           if (i < 1 || (idxs[i] - idxs[i - 1]) > numWords)
             result.push(RiTa.untokenize(sub));
       }
